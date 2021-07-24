@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,16 @@ public class JwtUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
-    private String SECRET_KEY = "secret";
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
+
+    @Value("${jwt.expirationDateInMs}")
+    private Long expirationInMs;
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         Date currentTime = new Date(System.currentTimeMillis());
-        Date expirationTime = new Date(currentTime.getTime() + 1000 * 60 * 60);
+        Date expirationTime = new Date(currentTime.getTime() + expirationInMs);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
@@ -39,6 +44,7 @@ public class JwtUtil {
                     .parseClaimsJws(jwt);
             return true;
         } catch (Exception e) {
+            logger.error(e.toString());
             logger.error("There is something wrong with the JWT!");
         }
         return false;

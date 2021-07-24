@@ -17,7 +17,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    // (todo) Need to add jwt filter
     @GetMapping("hello")
     public ResponseEntity<?> getHello() {
         return ResponseEntity.ok("Hello world!");
