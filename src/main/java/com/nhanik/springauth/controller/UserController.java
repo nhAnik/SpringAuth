@@ -1,7 +1,10 @@
 package com.nhanik.springauth.controller;
 
+import com.nhanik.springauth.model.RefreshToken;
 import com.nhanik.springauth.payload.AuthenticationRequest;
+import com.nhanik.springauth.payload.AuthenticationResponse;
 import com.nhanik.springauth.payload.RegistrationRequest;
+import com.nhanik.springauth.service.RefreshTokenService;
 import com.nhanik.springauth.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    RefreshTokenService refreshTokenService;
 
     @GetMapping("hello")
     public ResponseEntity<?> getHello() {
@@ -32,6 +38,10 @@ public class UserController {
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
         logger.info("Got an authentication request for email " + request.getEmail());
         String jwt = userService.authenticateUser(request);
-        return ResponseEntity.ok(jwt);
+        RefreshToken refreshToken = refreshTokenService.generateRefreshToken(request);
+
+        AuthenticationResponse authenticationResponse =
+                new AuthenticationResponse(jwt, refreshToken.getToken(), request.getEmail());
+        return ResponseEntity.ok(authenticationResponse);
     }
 }

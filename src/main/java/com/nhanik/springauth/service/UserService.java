@@ -75,7 +75,6 @@ public class UserService implements UserDetailsService {
         }
         logger.info("Authenticated user with email " + email);
         UserDetails userDetails = loadUserByUsername(email);
-        String jwt = jwtUtil.generateToken(userDetails);
-        return jwt;
+        return jwtUtil.generateToken(userDetails);
     }
 }
