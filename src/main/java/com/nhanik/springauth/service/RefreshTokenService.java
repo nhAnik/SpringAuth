@@ -62,6 +62,6 @@ public class RefreshTokenService {
 
     private RefreshToken findByToken(String token) {
         return refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new IllegalStateException("No such token in database"));
+                .orElseThrow(() -> new IllegalStateException("No such refresh token in database"));
     }
 }

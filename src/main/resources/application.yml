@@ -11,8 +11,25 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your_email
+    password: your_email_password
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
 
 jwt:
   secret: A55956D0F5882F654B04D2EDDF4015BC34E0645FB69C4A211F48A3433DD9F6CE
   expirationDateInMs: 300000
   refreshTokenExpirationInMs: 86400000
+  resetPasswordTokenExpirationInMs: 300000
