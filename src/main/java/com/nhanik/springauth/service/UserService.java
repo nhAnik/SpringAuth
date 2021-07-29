@@ -34,6 +34,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository
@@ -45,7 +48,10 @@ public class UserService implements UserDetailsService {
         String email = request.getEmail();
         String password = request.getPassword();
 
-        // (todo) validation of email and password
+        if (emailService.isInvalidEmail(email)) {
+            logger.error("Malformed email");
+            throw new IllegalStateException("Provided email is malformed");
+        }
 
         boolean userExists = userRepository.findByEmail(email).isPresent();
         if (userExists) {
@@ -62,8 +68,6 @@ public class UserService implements UserDetailsService {
     public String authenticateUser(AuthenticationRequest request) {
         String email = request.getEmail();
         String password = request.getPassword();
-
-        // (todo) validation of email and password
 
         try {
             authenticationManager.authenticate(

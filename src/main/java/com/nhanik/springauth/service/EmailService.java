@@ -1,5 +1,6 @@
 package com.nhanik.springauth.service;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,10 @@ public class EmailService {
                 "Here is your password recovery link. Please follow the URL.\n" +
                 link;
 
+    }
+
+    public boolean isInvalidEmail(String email) {
+        EmailValidator emailValidator = EmailValidator.getInstance();
+        return !emailValidator.isValid(email);
     }
 }
