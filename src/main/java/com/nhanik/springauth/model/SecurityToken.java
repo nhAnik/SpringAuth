@@ -8,11 +8,11 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "reset_pass_table")
+@Table(name = "security_token_table")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ResetPasswordToken {
+public class SecurityToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

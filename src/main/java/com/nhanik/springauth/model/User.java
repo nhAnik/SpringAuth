@@ -23,6 +23,7 @@ public class User implements UserDetails {
     private Long id;
     private String email;
     private String password;
+    private boolean enabled = false;
 
     public User(String email, String password) {
         this.email = email;
@@ -61,6 +62,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

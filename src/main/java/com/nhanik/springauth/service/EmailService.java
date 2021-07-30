@@ -21,13 +21,15 @@ public class EmailService {
     JavaMailSender mailSender;
 
     @Async
-    public void sendMail(String tokenUuid, String to) {
+    public void sendMail(String tokenUuid, String to, boolean isConfirmation) {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-        String mailText = generateMailText(tokenUuid, to);
+        String mailText = generateMailText(tokenUuid, to, isConfirmation);
+        String subject = isConfirmation ? "Confirm mail" : "Reset password";
         try {
             helper.setTo(to);
-            helper.setSubject("Reset password");
+            helper.setFrom("no-reply@nhanik.com");
+            helper.setSubject(subject);
             helper.setText(mailText);
             mailSender.send(message);
         } catch (MessagingException e) {
@@ -35,13 +37,23 @@ public class EmailService {
         }
     }
 
-    private String generateMailText(String tokenUuid, String to) {
+    private String generateMailText(String tokenUuid, String to, boolean isConfirmation) {
         String userName = to.split("@")[0];
-        String link = "http://localhost:8080/reset_password?reset_password_token="+tokenUuid;
-        return "Hi " + userName + ",\n" +
-                "Here is your password recovery link. Please follow the URL.\n" +
-                link;
+        String mailBody = isConfirmation ? generateEmailConfirmationMailText(tokenUuid) :
+                generatePasswordRecoveryMailText(tokenUuid);
+        return "Hi " + userName + ",\n" + mailBody;
 
+
+    }
+
+    private String generateEmailConfirmationMailText(String tokenUuid) {
+        String link = "http://localhost:8080/register/confirm?confirm_token="+tokenUuid;
+        return "Here is your email confirmation link. Please follow the URL.\n" + link;
+    }
+
+    private String generatePasswordRecoveryMailText(String tokenUuid) {
+        String link = "http://localhost:8080/reset_password?reset_password_token="+tokenUuid;
+        return "Here is your password recovery link. Please follow the URL.\n" + link;
     }
 
     public boolean isInvalidEmail(String email) {

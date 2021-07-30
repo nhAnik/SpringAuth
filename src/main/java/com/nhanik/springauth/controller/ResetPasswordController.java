@@ -20,7 +20,7 @@ public class ResetPasswordController {
 
     @GetMapping("reset_password")
     public ResponseEntity<?> resetPassword(@RequestParam("reset_password_token") String token) {
-        String message = resetPasswordService.validateResetPasswordToken(token);
-        return ResponseEntity.ok(message);
+        resetPasswordService.validateResetPasswordToken(token);
+        return ResponseEntity.ok("Token validation successful");
     }
 }

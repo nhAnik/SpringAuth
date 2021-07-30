@@ -29,9 +29,16 @@ public class UserController {
     }
 
     @PostMapping("register")
-    public void register(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<?>  register(@RequestBody RegistrationRequest request) {
         logger.info("Got a register request for email " + request.getEmail());
         userService.createNewUser(request);
+        return ResponseEntity.ok("confirmation mail sent");
+    }
+
+    @GetMapping("register/confirm")
+    public ResponseEntity<?> confirmRegister(@RequestParam("confirm_token") String token) {
+        userService.confirmRegister(token);
+        return ResponseEntity.ok("confirmed!");
     }
 
     @PostMapping("authenticate")
