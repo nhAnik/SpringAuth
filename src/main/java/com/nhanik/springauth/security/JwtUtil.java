@@ -44,7 +44,6 @@ public class JwtUtil {
                     .parseClaimsJws(jwt);
             return true;
         } catch (Exception e) {
-            logger.error(e.toString());
             logger.error("There is something wrong with the JWT!");
         }
         return false;

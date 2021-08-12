@@ -1,5 +1,6 @@
 package com.nhanik.springauth.service;
 
+import com.nhanik.springauth.exception.MalformedEmailException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +43,6 @@ public class EmailService {
         String mailBody = isConfirmation ? generateEmailConfirmationMailText(tokenUuid) :
                 generatePasswordRecoveryMailText(tokenUuid);
         return "Hi " + userName + ",\n" + mailBody;
-
-
     }
 
     private String generateEmailConfirmationMailText(String tokenUuid) {
@@ -56,8 +55,10 @@ public class EmailService {
         return "Here is your password recovery link. Please follow the URL.\n" + link;
     }
 
-    public boolean isInvalidEmail(String email) {
+    public void checkInvalidEmail(String email) {
         EmailValidator emailValidator = EmailValidator.getInstance();
-        return !emailValidator.isValid(email);
+        if (!emailValidator.isValid(email)) {
+            throw new MalformedEmailException(email);
+        }
     }
 }

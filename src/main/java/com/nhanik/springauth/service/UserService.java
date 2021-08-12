@@ -1,5 +1,6 @@
 package com.nhanik.springauth.service;
 
+import com.nhanik.springauth.exception.RegistrationFailureException;
 import com.nhanik.springauth.model.SecurityToken;
 import com.nhanik.springauth.model.User;
 import com.nhanik.springauth.payload.AuthenticationRequest;
@@ -51,24 +52,20 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("User does not exist"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
     }
 
     public void createNewUser(RegistrationRequest request) {
         String email = request.getEmail();
         String password = request.getPassword();
-
-        if (emailService.isInvalidEmail(email)) {
-            logger.error("Malformed email");
-            throw new IllegalStateException("Provided email is malformed");
-        }
+        emailService.checkInvalidEmail(email);
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if (user.isEnabled()) {
                 logger.info("User with email " + email + " already exists");
-                throw new IllegalStateException("User already exists");
+                throw new RegistrationFailureException(email);
             }
             // User exists but did not confirm email previously, so just send mail in this case
             // And also remove previous security token if any
@@ -94,17 +91,9 @@ public class UserService implements UserDetailsService {
         String email = request.getEmail();
         String password = request.getPassword();
 
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, password)
-            );
-        } catch (BadCredentialsException e) {
-            logger.error("Authentication with email " + email + " failed!");
-            throw new IllegalStateException("Incorrect username or password");
-        } catch (DisabledException e) {
-            logger.error("Authentication with email " + email + " failed!");
-            throw new IllegalStateException("User is not enabled yet!");
-        }
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+        );
         logger.info("Authenticated user with email " + email);
         UserDetails userDetails = loadUserByUsername(email);
         return jwtUtil.generateToken(userDetails);

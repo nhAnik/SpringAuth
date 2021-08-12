@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 public class RefreshTokenController {
 
@@ -16,7 +18,7 @@ public class RefreshTokenController {
     private RefreshTokenService refreshTokenService;
 
     @PostMapping("refresh_token")
-    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
         String jwt = refreshTokenService.refreshToken(request);
         return ResponseEntity.ok(new TokenRefreshResponse(jwt));
     }

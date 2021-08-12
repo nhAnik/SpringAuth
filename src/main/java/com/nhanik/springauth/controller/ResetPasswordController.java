@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 public class ResetPasswordController {
 
@@ -13,7 +15,7 @@ public class ResetPasswordController {
     ResetPasswordService resetPasswordService;
 
     @PostMapping("forget_password")
-    public ResponseEntity<?> validateEmailAndSendMail(@RequestBody ResetPasswordRequest request) {
+    public ResponseEntity<?> validateEmailAndSendMail(@Valid @RequestBody ResetPasswordRequest request) {
         resetPasswordService.validateEmailAndSendMail(request);
         return ResponseEntity.ok("Reset link sent to mail");
     }

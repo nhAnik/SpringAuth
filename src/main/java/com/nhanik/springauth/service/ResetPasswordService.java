@@ -23,10 +23,7 @@ public class ResetPasswordService {
 
     public void validateEmailAndSendMail(ResetPasswordRequest request) {
         String email = request.getEmail();
-        if (emailService.isInvalidEmail(email)) {
-            logger.error("Malformed email");
-            throw new IllegalStateException("Provided email is malformed");
-        }
+        emailService.checkInvalidEmail(email);
         logger.info("Validate email " + email);
         User user = (User) userService.loadUserByUsername(email);
         if (user.isEnabled() == false) {

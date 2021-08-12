@@ -1,5 +1,6 @@
 package com.nhanik.springauth.service;
 
+import com.nhanik.springauth.exception.ResourceNotFoundException;
 import com.nhanik.springauth.model.RefreshToken;
 import com.nhanik.springauth.model.User;
 import com.nhanik.springauth.payload.AuthenticationRequest;
@@ -62,6 +63,6 @@ public class RefreshTokenService {
 
     private RefreshToken findByToken(String token) {
         return refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new IllegalStateException("No such refresh token in database"));
+                .orElseThrow(() -> new ResourceNotFoundException("Refresh token"));
     }
 }

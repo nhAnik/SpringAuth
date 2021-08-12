@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 public class UserController {
 
@@ -29,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<?>  register(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<?>  register(@Valid @RequestBody RegistrationRequest request) {
         logger.info("Got a register request for email " + request.getEmail());
         userService.createNewUser(request);
         return ResponseEntity.ok("confirmation mail sent");
@@ -42,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest request) {
         logger.info("Got an authentication request for email " + request.getEmail());
         String jwt = userService.authenticateUser(request);
         RefreshToken refreshToken = refreshTokenService.generateRefreshToken(request);

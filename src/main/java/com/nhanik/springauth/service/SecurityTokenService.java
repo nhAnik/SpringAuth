@@ -1,5 +1,6 @@
 package com.nhanik.springauth.service;
 
+import com.nhanik.springauth.exception.ResourceNotFoundException;
 import com.nhanik.springauth.model.SecurityToken;
 import com.nhanik.springauth.model.User;
 import com.nhanik.springauth.repository.SecurityTokenRepository;
@@ -42,7 +43,6 @@ public class SecurityTokenService {
             logger.error("Security token is expired");
             throw new IllegalStateException("Security token is expired");
         }
-
         return securityToken;
     }
 
@@ -52,11 +52,11 @@ public class SecurityTokenService {
 
     private SecurityToken findByToken(String token) {
         return securityTokenRepository.findByToken(token)
-                .orElseThrow(() -> new IllegalStateException("No such token in database"));
+                .orElseThrow(() -> new ResourceNotFoundException("Token"));
     }
 
     public SecurityToken findByUser(User user) {
         return securityTokenRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("No such user in database"));
+                .orElseThrow(() -> new ResourceNotFoundException("User"));
     }
 }
