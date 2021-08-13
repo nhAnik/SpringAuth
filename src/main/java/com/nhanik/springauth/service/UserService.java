@@ -59,18 +59,10 @@ public class UserService implements UserDetailsService {
                 throw new RegistrationFailureException(email);
             }
             // User exists but did not confirm email previously, so just send mail in this case
-            // And also remove previous security token if any
             logger.info("Sending confirmation mail again to " + email);
-            try {
-                SecurityToken securityToken = securityTokenService.findByUser(user);
-                securityTokenService.removeToken(securityToken);
-            } catch (IllegalStateException e) {
-                logger.info("Token does not exist, nothing to remove");
-            }
             emailConfirmationService.sendEmailConfirmationMail(user);
             return;
         }
-
         logger.info("Saving new user with email " + email + " in database");
         String encodedPass = passwordEncoder.encode(password);
         User user = new User(email, encodedPass);
@@ -92,10 +84,8 @@ public class UserService implements UserDetailsService {
 
     public void confirmRegister(String token) {
         SecurityToken securityToken = emailConfirmationService.validateAndGetToken(token);
-
         String email = securityToken.getUser().getEmail();
         logger.info("Confirm registration of user with email " + email);
         userRepository.enableUser(email);
-        securityTokenService.removeToken(securityToken);
     }
 }

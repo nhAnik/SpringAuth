@@ -35,3 +35,8 @@ jwt:
   jwtExpirationInMs: 300000
   refreshTokenExpirationInMs: 86400000
   securityTokenExpirationInMs: 300000
+
+scheduling:
+  enabled: true
+  cron:
+    expression: "* * */12 * * *"

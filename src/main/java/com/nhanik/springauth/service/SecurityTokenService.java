@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -46,17 +48,16 @@ public class SecurityTokenService {
         return securityToken;
     }
 
-    public void removeToken(SecurityToken securityToken) {
-        securityTokenRepository.delete(securityToken);
-    }
-
     private SecurityToken findByToken(String token) {
         return securityTokenRepository.findByToken(token)
                 .orElseThrow(() -> new ResourceNotFoundException("Token"));
     }
 
-    public SecurityToken findByUser(User user) {
-        return securityTokenRepository.findByUser(user)
-                .orElseThrow(() -> new ResourceNotFoundException("User"));
+    // Scheduler to delete all expired tokens from database
+    @Transactional
+    @Scheduled(cron = "${scheduling.cron.expression}")
+    public void scheduleDeleteAllExpiredToken() {
+        logger.info("Scheduler: Trying to delete all expired tokens");
+        securityTokenRepository.deleteAllExpiredToken(Instant.now());
     }
 }
