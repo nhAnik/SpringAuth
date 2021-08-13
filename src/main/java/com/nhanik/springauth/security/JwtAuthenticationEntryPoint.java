@@ -2,7 +2,7 @@ package com.nhanik.springauth.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhanik.springauth.exception.ExceptionResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void commence(

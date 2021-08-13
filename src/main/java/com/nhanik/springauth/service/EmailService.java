@@ -1,10 +1,10 @@
 package com.nhanik.springauth.service;
 
 import com.nhanik.springauth.exception.MalformedEmailException;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -14,12 +14,12 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
+@RequiredArgsConstructor
 public class EmailService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
-    @Autowired
-    JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     @Async
     public void sendMail(String tokenUuid, String to, boolean isConfirmation) {

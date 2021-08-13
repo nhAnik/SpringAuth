@@ -6,24 +6,22 @@ import com.nhanik.springauth.payload.AuthenticationResponse;
 import com.nhanik.springauth.payload.RegistrationRequest;
 import com.nhanik.springauth.service.RefreshTokenService;
 import com.nhanik.springauth.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    RefreshTokenService refreshTokenService;
+    private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("hello")
     public ResponseEntity<?> getHello() {

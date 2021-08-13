@@ -7,9 +7,9 @@ import com.nhanik.springauth.payload.AuthenticationRequest;
 import com.nhanik.springauth.payload.TokenRefreshRequest;
 import com.nhanik.springauth.repository.RefreshTokenRepository;
 import com.nhanik.springauth.security.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshTokenService.class);
@@ -25,14 +26,9 @@ public class RefreshTokenService {
     @Value("${jwt.refreshTokenExpirationInMs}")
     private Long refreshTokenExpirationInMs;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final UserService userService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtUtil jwtUtil;
 
     public RefreshToken generateRefreshToken(AuthenticationRequest request) {
         RefreshToken refreshToken = new RefreshToken();

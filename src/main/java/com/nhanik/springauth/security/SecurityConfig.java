@@ -1,6 +1,7 @@
 package com.nhanik.springauth.security;
 
 import com.nhanik.springauth.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,29 +16,25 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     UserService userService;
 
-    @Autowired
-    JwtRequestFilter jwtRequestFilter;
-
-    @Autowired
-    private JwtAuthenticationEntryPoint authenticationEntryPoint;
-
-    @Autowired
-    private JwtAccessDeniedHandler accessDeniedHandler;
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final JwtRequestFilter jwtRequestFilter;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
 
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Override

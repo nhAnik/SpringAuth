@@ -4,9 +4,9 @@ import com.nhanik.springauth.exception.ResourceNotFoundException;
 import com.nhanik.springauth.model.SecurityToken;
 import com.nhanik.springauth.model.User;
 import com.nhanik.springauth.repository.SecurityTokenRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class SecurityTokenService {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityTokenService.class);
@@ -21,8 +22,7 @@ public class SecurityTokenService {
     @Value("${jwt.securityTokenExpirationInMs}")
     private Long securityTokenExpirationInMs;
 
-    @Autowired
-    private SecurityTokenRepository securityTokenRepository;
+    private final SecurityTokenRepository securityTokenRepository;
 
     public String generateSecurityToken(User user) {
         SecurityToken securityToken = new SecurityToken();

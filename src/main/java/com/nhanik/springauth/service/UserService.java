@@ -7,12 +7,11 @@ import com.nhanik.springauth.payload.AuthenticationRequest;
 import com.nhanik.springauth.payload.RegistrationRequest;
 import com.nhanik.springauth.repository.UserRepository;
 import com.nhanik.springauth.security.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,30 +22,22 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    private UserRepository userRepository;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private EmailConfirmationService emailConfirmationService;
-
-    @Autowired
-    private SecurityTokenService securityTokenService;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+    private final EmailService emailService;
+    private final EmailConfirmationService emailConfirmationService;
+    private final SecurityTokenService securityTokenService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -78,7 +69,7 @@ public class UserService implements UserDetailsService {
             }
             emailConfirmationService.sendEmailConfirmationMail(user);
             return;
-        };
+        }
 
         logger.info("Saving new user with email " + email + " in database");
         String encodedPass = passwordEncoder.encode(password);
